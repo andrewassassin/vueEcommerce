@@ -29,7 +29,9 @@
         </div>
     </div>
   </section>
+    <transition >
    <Modal v-if="isClickCart === true" :itemList="itemList" @closeBtn="closeModal" @clearItemList="clearItem" />
+    </transition >
 </div>
 </template>
 
@@ -85,12 +87,30 @@ export default {
         // 找到產品的id == pid 的資料
         return product.id === targetId
       })
-
-      const item = {
-        ...product,
-        amount
+      // console.log('itemlist前 ', this.itemList)
+      const already = this.itemList.find(item => {
+        // console.log('itemlist', item)
+        return item.id === product.id
+      })
+      console.log('already:   ', already)
+      if (already) {
+        console.log('amount al', amount)
+        const now = this.itemList.find(item => {
+          return item.id === already.id
+        })
+        now.amount = now.amount + amount
+      } else {
+        const item = {
+          ...product,
+          amount
+        }
+        this.itemList.push(item)
       }
-      this.itemList.push(item)
+      // const item = {
+      //   ...product,
+      //   amount
+      // }
+      // this.itemList.push(item)
     },
     clearItem (value) {
       // this.itemList = []
@@ -102,3 +122,12 @@ export default {
   }
 }
 </script>
+<style>
+.v-enter-active,.v-leave-active {
+  transition: opacity .4s;
+}
+
+.v-enter, .v-leave-to {
+  opacity: 0;
+}
+</style>
